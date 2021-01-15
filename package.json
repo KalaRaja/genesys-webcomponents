@@ -47,6 +47,7 @@
     "test.watch": "stencil test --spec --e2e --watchAll"
   },
   "dependencies": {
+    "@essentials/request-interval": "^1.2.0",
     "@popperjs/core": "^2.5.2",
     "intl-messageformat": "^9.3.11",
     "sortablejs": "^1.12.0",

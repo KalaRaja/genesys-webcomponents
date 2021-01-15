@@ -132,7 +132,7 @@
     </gux-form-field-beta>
   </div>
   <div>
-    <gux-form-field-beta>
+    <gux-form-field-beta onchange="notify(event)" oninput="notify(event)">
       <input slot="input" name="text" type="text" />
       <label slot="label">Text</label>
     </gux-form-field-beta>
@@ -152,7 +152,7 @@
 
   <div>
     <h1>range</h1>
-    <gux-form-field-beta>
+    <gux-form-field-beta onchange="notify(event)" oninput="notify(event)">
       <label slot="label">Range</label>
       <input slot="input" name="range" type="range" />
     </gux-form-field-beta>

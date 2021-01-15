@@ -1,4 +1,9 @@
 import { Component, Element, h, JSX, Listen, State } from '@stencil/core';
+import {
+  requestInterval,
+  clearRequestInterval,
+  RequestIntervalHandle
+} from '@essentials/request-interval';
 
 import { onDisabledChange } from '../../../../../../utils/dom/on-attribute-change';
 
@@ -27,11 +32,14 @@ export class GuxInputRangeBeta {
   @State()
   private active: boolean;
 
+  @State()
+  private valueWatcher: RequestIntervalHandle;
+
   @Listen('input')
   onInput(e: MouseEvent): void {
     const input = e.target as HTMLInputElement;
-    this.value = input.value;
-    this.updatePosition();
+
+    this.updateValue(input.value);
   }
 
   @Listen('focusin')
@@ -48,6 +56,11 @@ export class GuxInputRangeBeta {
     this.active = false;
   }
 
+  updateValue(newValue: string): void {
+    this.value = newValue;
+    this.updatePosition();
+  }
+
   updatePosition() {
     const value = Number(this.input.value || 0);
     const min = Number(this.input.min || 0);
@@ -55,10 +68,6 @@ export class GuxInputRangeBeta {
     const placementPercentage = ((value - min) / (max - min)) * 100;
 
     this.progressElement.style.width = `${placementPercentage}%`;
-  }
-
-  componentDidLoad() {
-    this.updatePosition();
   }
 
   componentWillLoad() {
@@ -74,8 +83,19 @@ export class GuxInputRangeBeta {
     );
   }
 
+  componentDidLoad() {
+    this.updatePosition();
+
+    this.valueWatcher = requestInterval(() => {
+      if (this.value !== this.input.value) {
+        this.updateValue(this.input.value);
+      }
+    }, 100);
+  }
+
   componentDidUnload(): void {
     this.disabledObserver.disconnect();
+    clearRequestInterval(this.valueWatcher);
   }
 
   render(): JSX.Element {
